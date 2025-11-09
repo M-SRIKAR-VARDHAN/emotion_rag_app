@@ -1,9 +1,9 @@
-# requirements.txt
 streamlit
 torch
 transformers[torch]
 langchain
 langchain-community
+langchain-huggingface
 sentence-transformers
 faiss-cpu
 huggingface_hub
