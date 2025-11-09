@@ -1,9 +1,10 @@
 streamlit
 torch
 transformers
+pydantic==1.10.13
 langchain==0.1.20
 langchain-community==0.0.38
-langchain-huggingface
+langchain-core==0.1.52
 sentence-transformers
 faiss-cpu
 huggingface_hub
