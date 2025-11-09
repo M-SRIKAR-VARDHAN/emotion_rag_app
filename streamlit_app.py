@@ -3,6 +3,7 @@ import streamlit as st
 from PIL import Image
 import model_utils  # Our "backend" file
 import time
+import traceback  # <-- IMPORT THIS FOR BETTER ERROR LOGGING
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -14,8 +15,11 @@ st.set_page_config(
 st.title(" facial Emotion-Driven Review Analysis 🤖")
 st.write("This app combines two AI systems. Upload a photo to see a facial emotion, and the system will automatically query a review database for that emotion.")
 
+print("DEBUG: streamlit_app.py: Top of script run.")
+
 # --- Load Models ---
 try:
+    print("DEBUG: streamlit_app.py: Entering model loading try block...")
     with st.spinner("Warming up the AI models... This may take a moment the first time."):
         start_time = time.time()
         emotion_processor, emotion_model, emotion_device = model_utils.load_emotion_model()
@@ -23,15 +27,24 @@ try:
         end_time = time.time()
     
     st.success(f"AI Models are ready! (Loaded in {end_time - start_time:.2f}s)")
+    print("DEBUG: streamlit_app.py: Models loaded successfully.")
 
 except Exception as e:
+    print(f"DEBUG: streamlit_app.py: CRITICAL ERROR during model loading: {e}")
     st.error(f"Error loading models: {e}")
     st.error("Please check your Hugging Face repository names in `model_utils.py` and ensure they are public.")
+    
+    # --- THIS WILL SHOW THE *REAL* ERROR ---
+    st.subheader("Full Error Traceback")
+    st.code(traceback.format_exc())
+    # --- END OF DEBUGGING CODE ---
+    
     st.stop()
 
 
 # --- App Layout ---
 tab1, tab2 = st.tabs(["📸 Query with a Photo (BONUS TASK)", "💬 Manual Text Query"])
+print("DEBUG: streamlit_app.py: Creating tabs.")
 
 # --- TAB 1: Photo Query ---
 with tab1:
@@ -39,6 +52,7 @@ with tab1:
     uploaded_file = st.file_uploader("Choose a photo of a face...", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
+        print("DEBUG: streamlit_app.py: Image uploaded.")
         image = Image.open(uploaded_file)
         
         col1, col2 = st.columns(2)
@@ -76,6 +90,7 @@ with tab2:
     text_query = st.text_input("Enter your query:", placeholder="e.g., 'What are customers happy about?'")
 
     if st.button("Search Reviews"):
+        print("DEBUG: streamlit_app.py: Manual search button clicked.")
         if text_query:
             with st.spinner("Searching review database..."):
                 result = model_utils.query_rag(qa_chain, text_query)
