@@ -7,5 +7,6 @@ langchain-core==0.1.52
 sentence-transformers
 faiss-cpu
 huggingface_hub
+langchain-huggingface
 Pillow
 datasets
