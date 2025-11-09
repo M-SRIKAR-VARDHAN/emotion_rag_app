@@ -322,7 +322,29 @@ def analyze_sentiment(sentiment_pipe, labels_map, text):
     try:
         print(f"DEBUG: Analyzing sentiment for text (first 50 chars): {text[:50]}...")
         sentiment = sentiment_pipe(text)[0]
-        label = labels_map.get(sentiment['label'], 'UNKNOWN')
+        
+        # Debug: Print raw sentiment output
+        print(f"DEBUG: Raw sentiment output: {sentiment}")
+        
+        # Handle both LABEL_X and direct label names
+        raw_label = sentiment['label']
+        
+        # First try the labels_map
+        if raw_label in labels_map:
+            label = labels_map[raw_label]
+        # Then check if it's already a readable label
+        elif raw_label.upper() in ['POSITIVE', 'NEGATIVE', 'NEUTRAL']:
+            label = raw_label.upper()
+        # Fallback mapping for newer model versions
+        elif raw_label.lower() == 'positive':
+            label = 'POSITIVE'
+        elif raw_label.lower() == 'negative':
+            label = 'NEGATIVE'
+        elif raw_label.lower() == 'neutral':
+            label = 'NEUTRAL'
+        else:
+            label = f'UNKNOWN ({raw_label})'
+            
         score = sentiment['score']
         result = f"{label} (Score: {score:.2f})"
         
