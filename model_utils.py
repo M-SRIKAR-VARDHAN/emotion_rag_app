@@ -10,10 +10,10 @@ from transformers import (
 )
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain_community.chains import RetrievalQA
+from langchain.chains import RetrievalQA
 from langchain_community.llms import HuggingFacePipeline
-from langchain.prompts import PromptTemplate
-from langchain.schema.retriever import BaseRetriever
+from langchain_core.prompts import PromptTemplate
+from langchain_core.retrievers import BaseRetriever
 from typing import List
 from PIL import Image
 import numpy as np
