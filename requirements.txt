@@ -1,8 +1,7 @@
 streamlit
 torch
 transformers[torch]
-langchain
-langchain-core
+langchain==0.2.17
 langchain-community
 langchain-huggingface
 sentence-transformers

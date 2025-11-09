@@ -12,8 +12,9 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain_community.llms import HuggingFacePipeline
-from langchain_core.prompts import PromptTemplate
-from langchain_core.retrievers import BaseRetriever
+from langchain.prompts import PromptTemplate
+from langchain.schema.retriever import BaseRetriever
+from langchain.callbacks.manager import CallbackManagerForRetrieverRun
 from typing import List
 from PIL import Image
 import numpy as np
