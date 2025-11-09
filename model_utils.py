@@ -1,8 +1,4 @@
 # model_utils.py
-# Forcing a full redeploy
-# streamlit_app.py
-import streamlit as st
-from PIL import Image
 import streamlit as st
 import torch
 from transformers import (
@@ -112,9 +108,23 @@ def load_rag_pipeline():
     print("DEBUG: Embeddings loaded.")
 
     os.makedirs(FAISS_INDEX_DIR, exist_ok=True)
-    print(f"DEBUG: Downloading RAG files from {RAG_FILES_REPO} to {FAISS_INDEX_DIR}")
-    hf_hub_download(repo_id=RAG_FILES_REPO, filename="index.faiss", local_dir=FAISS_INDEX_DIR)
-    hf_hub_download(repo_id=RAG_FILES_REPO, filename="index.pkl", local_dir=FAISS_INDEX_DIR)
+    print(f"DEBUG: Downloading RAG files from {RAG_FILES_REPO} to {FAISS_INDEX_DIR} (FORCING RE-DOWNLOAD)")
+    
+    # --- START OF THE NEW FIX ---
+    hf_hub_download(
+        repo_id=RAG_FILES_REPO, 
+        filename="index.faiss", 
+        local_dir=FAISS_INDEX_DIR, 
+        force_download=True  # <-- Forces download of new file
+    )
+    hf_hub_download(
+        repo_id=RAG_FILES_REPO, 
+        filename="index.pkl", 
+        local_dir=FAISS_INDEX_DIR, 
+        force_download=True  # <-- Forces download of new file
+    )
+    # --- END OF THE NEW FIX ---
+    
     print("DEBUG: RAG files downloaded.")
 
     print("DEBUG: Loading FAISS index...")
