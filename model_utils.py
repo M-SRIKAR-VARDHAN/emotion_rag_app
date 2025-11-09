@@ -1,4 +1,4 @@
-
+# model_utils.py
 import streamlit as st
 import torch
 from transformers import (
@@ -8,13 +8,42 @@ from transformers import (
     AutoTokenizer,
     AutoModelForSeq2SeqLM
 )
-from langchain_huggingface import HuggingFaceEmbeddings
+
+# Robust imports for langchain with fallbacks
+try:
+    from langchain_huggingface import HuggingFaceEmbeddings
+except ImportError:
+    from langchain_community.embeddings import HuggingFaceEmbeddings
+
 from langchain_community.vectorstores import FAISS
-from langchain.chains import RetrievalQA
+
+try:
+    from langchain.chains import RetrievalQA
+except ImportError:
+    try:
+        from langchain_community.chains import RetrievalQA
+    except ImportError:
+        st.error("Could not import RetrievalQA. Please ensure langchain is properly installed.")
+        raise
+
 from langchain_community.llms import HuggingFacePipeline
 from langchain.prompts import PromptTemplate
-from langchain.schema.retriever import BaseRetriever
-from langchain.callbacks.manager import CallbackManagerForRetrieverRun
+
+# Import BaseRetriever with fallback
+try:
+    from langchain.schema.retriever import BaseRetriever
+except ImportError:
+    try:
+        from langchain.retrievers import BaseRetriever
+    except ImportError:
+        from langchain_core.retrievers import BaseRetriever
+
+# Import callback manager with fallback
+try:
+    from langchain.callbacks.manager import CallbackManagerForRetrieverRun
+except ImportError:
+    from langchain_core.callbacks import CallbackManagerForRetrieverRun
+
 from typing import List
 from PIL import Image
 import numpy as np
