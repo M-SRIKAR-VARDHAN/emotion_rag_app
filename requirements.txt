@@ -1,0 +1,11 @@
+# requirements.txt
+streamlit
+torch
+transformers[torch]
+langchain
+langchain-community
+sentence-transformers
+faiss-cpu
+huggingface_hub
+Pillow
+datasets
