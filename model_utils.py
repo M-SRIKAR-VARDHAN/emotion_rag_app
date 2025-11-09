@@ -52,8 +52,10 @@ Provide a brief summary (2-3 sentences maximum):"""
 class DiverseRetriever(BaseRetriever):
     vectorstore: object
     k: int = 4
-    class Config:
-        arbitrary_types_allowed = True
+    # --- THIS IS THE FIX (Pydantic v2 syntax) ---
+    model_config = {"arbitrary_types_allowed": True}
+    # --- End of Fix ---
+
     def _get_relevant_documents(
         self, query: str, *, run_manager: CallbackManagerForRetrieverRun = None
     ) -> List:
