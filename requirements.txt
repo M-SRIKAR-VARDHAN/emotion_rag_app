@@ -4,6 +4,7 @@ transformers[torch]
 langchain==0.2.17
 langchain-community
 langchain-huggingface
+pydantic<2.0.0
 sentence-transformers
 faiss-cpu
 huggingface_hub

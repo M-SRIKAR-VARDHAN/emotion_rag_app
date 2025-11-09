@@ -15,7 +15,6 @@ from langchain_community.llms import HuggingFacePipeline
 from langchain.prompts import PromptTemplate
 from langchain.schema.retriever import BaseRetriever
 from langchain.callbacks.manager import CallbackManagerForRetrieverRun
-from langchain.schema import Document
 from typing import List
 from PIL import Image
 import numpy as np
@@ -49,20 +48,15 @@ Customer Reviews:
 Question: {question}
 Provide a brief summary (2-3 sentences maximum):"""
 
-# Fixed for Pydantic v2 compatibility
+# Copied from your AI_part2, Cell 6
 class DiverseRetriever(BaseRetriever):
     vectorstore: object
     k: int = 4
-    
     class Config:
         arbitrary_types_allowed = True
-    
     def _get_relevant_documents(
-        self, 
-        query: str, 
-        *, 
-        run_manager: CallbackManagerForRetrieverRun = None
-    ) -> List[Document]:
+        self, query: str, *, run_manager: CallbackManagerForRetrieverRun = None
+    ) -> List:
         candidates = self.vectorstore.similarity_search(query, k=20)
         selected = []
         seen_texts = set()
