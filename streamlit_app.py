@@ -84,7 +84,7 @@ with tab1:
                     st.write(f"> {doc.page_content}")
                     st.markdown(f"**Sentiment:** {sentiment}")
 
-# --- TAB 2: Manual Query ---
+
 with tab2:
     st.header("Query the Review Database Manually")
     text_query = st.text_input("Enter your query:", placeholder="e.g., 'What are customers happy about?'")
