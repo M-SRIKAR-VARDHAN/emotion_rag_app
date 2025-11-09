@@ -1,9 +1,9 @@
-# streamlit_app.py
+# streamlit_app.py - Updated to work with simplified model_utils
 import streamlit as st
 from PIL import Image
-import model_utils  # Our "backend" file
+import model_utils_simple as model_utils  # Use the simplified version
 import time
-import traceback  # <-- IMPORT THIS FOR BETTER ERROR LOGGING
+import traceback
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -12,7 +12,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title(" facial Emotion-Driven Review Analysis 🤖")
+st.title("Facial Emotion-Driven Review Analysis 🤖")
 st.write("This app combines two AI systems. Upload a photo to see a facial emotion, and the system will automatically query a review database for that emotion.")
 
 print("DEBUG: streamlit_app.py: Top of script run.")
@@ -23,7 +23,9 @@ try:
     with st.spinner("Warming up the AI models... This may take a moment the first time."):
         start_time = time.time()
         emotion_processor, emotion_model, emotion_device = model_utils.load_emotion_model()
-        qa_chain, sentiment_pipe, sentiment_labels = model_utils.load_rag_pipeline()
+        db, llm, embeddings, sentiment_pipe, sentiment_labels = model_utils.load_rag_pipeline()
+        # Create a tuple to pass as qa_chain for compatibility
+        qa_chain = (db, llm, embeddings)
         end_time = time.time()
     
     st.success(f"AI Models are ready! (Loaded in {end_time - start_time:.2f}s)")
@@ -34,13 +36,11 @@ except Exception as e:
     st.error(f"Error loading models: {e}")
     st.error("Please check your Hugging Face repository names in `model_utils.py` and ensure they are public.")
     
-    # --- THIS WILL SHOW THE *REAL* ERROR ---
+    # Show the full error traceback
     st.subheader("Full Error Traceback")
     st.code(traceback.format_exc())
-    # --- END OF DEBUGGING CODE ---
     
     st.stop()
-
 
 # --- App Layout ---
 tab1, tab2 = st.tabs(["📸 Query with a Photo (BONUS TASK)", "💬 Manual Text Query"])
@@ -73,18 +73,18 @@ with tab1:
             with st.spinner(f"2. Searching review database for '{emotion}' reviews..."):
                 result = model_utils.query_rag(qa_chain, dynamic_query)
             
-            st.subheader("📝 RAG Summary")
+            st.subheader("🔍 RAG Summary")
             st.write(result['result'])
             
             st.subheader("📚 Retrieved Reviews")
             for doc in result['source_documents']:
                 sentiment = model_utils.analyze_sentiment(sentiment_pipe, sentiment_labels, doc.page_content)
                 with st.container(border=True):
-                    st.markdown(f"**Review (Emotion: {doc.metadata.get('emotion')})**")
+                    st.markdown(f"**Review (Emotion: {doc.metadata.get('emotion', 'N/A')})**")
                     st.write(f"> {doc.page_content}")
                     st.markdown(f"**Sentiment:** {sentiment}")
 
-
+# --- TAB 2: Manual Query ---
 with tab2:
     st.header("Query the Review Database Manually")
     text_query = st.text_input("Enter your query:", placeholder="e.g., 'What are customers happy about?'")
@@ -95,14 +95,14 @@ with tab2:
             with st.spinner("Searching review database..."):
                 result = model_utils.query_rag(qa_chain, text_query)
             
-            st.subheader("📝 RAG Summary")
+            st.subheader("🔍 RAG Summary")
             st.write(result['result'])
             
             st.subheader("📚 Retrieved Reviews")
             for doc in result['source_documents']:
                 sentiment = model_utils.analyze_sentiment(sentiment_pipe, sentiment_labels, doc.page_content)
                 with st.container(border=True):
-                    st.markdown(f"**Review (Emotion: {doc.metadata.get('emotion')})**")
+                    st.markdown(f"**Review (Emotion: {doc.metadata.get('emotion', 'N/A')})**")
                     st.write(f"> {doc.page_content}")
                     st.markdown(f"**Sentiment:** {sentiment}")
         else:
