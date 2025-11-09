@@ -1,7 +1,7 @@
 # streamlit_app.py - Updated to work with simplified model_utils
 import streamlit as st
 from PIL import Image
-import model_utils_simple as model_utils  # Use the simplified version
+import model_utils  # Use the simplified version
 import time
 import traceback
 
