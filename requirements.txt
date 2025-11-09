@@ -6,9 +6,6 @@ faiss-cpu
 huggingface_hub
 Pillow
 datasets
-
-# Modern, Pydantic v2-compatible langchain packages
-# Unpinning these lets pip install the correct versions
 langchain
 langchain-community
 langchain-core
