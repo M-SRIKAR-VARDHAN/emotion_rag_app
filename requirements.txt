@@ -10,3 +10,7 @@ langchain
 langchain-community
 langchain-core
 langchain-huggingface
+scipy
+scikit-learn
+tokenizers
+numpy
